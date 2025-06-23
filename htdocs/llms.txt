@@ -4,6 +4,7 @@ http://localhost:3000/searches/2025-06-23-monaco-yacht-charter-2025.html
 http://localhost:3000/searches/2025-06-23-luxury-yacht-monaco.html
 http://localhost:3000/searches/2025-06-23-luxury-superyacht-monaco.html
 http://localhost:3000/searches/2025-06-23-large-yacht-owned-by-peter-drew-in-monaco.html
+http://localhost:3000/searches/2025-06-23-large-yacht-owned-by-peter-drew-in-monaco-xyz.html
 http://localhost:3000/searches/2025-06-23-large-boat-in-monaco.html
 http://localhost:3000/searches/2025-06-23-large-big-boat-in-monaco-with-spa-on-board.html
 http://localhost:3000/searches/2025-06-23-best-yacht-in-monaco.html

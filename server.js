@@ -715,10 +715,12 @@ function generateSearchPageHTML(query, results, filename) {
         <!-- Results Grid -->
         <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             ${results.sources.map((yacht, index) => {
-                const isInitialCard = index < 3;
-                const isHiddenCard = index >= 3;
+                // Responsive initial cards: 1 on mobile, 3 on desktop
+                const isMobileInitial = index < 1;
+                const isDesktopInitial = index < 3;
+                const isHiddenCard = index >= 1; // All cards after first are initially hidden
                 return `
-                <div class="yacht-card rounded-lg overflow-hidden ${isInitialCard ? 'opacity-0 transform translate-y-4 transition-all duration-500 ease-out' : 'hidden-next-cards'}"
+                <div class="yacht-card rounded-lg overflow-hidden opacity-0 transform translate-y-4 transition-all duration-500 ease-out ${isHiddenCard ? 'hidden-next-cards' : ''}"
                      data-yacht-index="${index}"
                      ${isHiddenCard ? 'style="display: none;"' : ''}>
                     <img src="${yacht.image || `https://placehold.co/400x250/E0E0E0/333333?text=Yacht%20${index + 1}`}"
@@ -739,13 +741,13 @@ function generateSearchPageHTML(query, results, filename) {
             `;
             }).join('')}
             
-            ${results.sources.length > 3 ? `
-            <!-- Show More Link -->
+            ${results.sources.length > 1 ? `
+            <!-- Show More Link (responsive text) -->
             <div id="show-more-container" class="col-span-full flex justify-center mt-6 mb-4">
                 <button id="show-more-link"
                         class="text-blue-600 hover:text-blue-800 font-medium text-lg transition-colors duration-200 flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-blue-50"
                         onclick="showNextCards()">
-                    <span>👉 Would you like AVA to present the next 3 results?</span>
+                    <span id="show-more-text">👉 Would you like AVA to present the next results?</span>
                 </button>
             </div>
             ` : ''}
@@ -786,13 +788,32 @@ function generateSearchPageHTML(query, results, filename) {
     </footer>
 
 
-    <!-- JavaScript for 3+3 pagination -->
+    <!-- JavaScript for responsive pagination (1+1+1 mobile, 3+3 desktop) -->
     <script>
-        // Show the next 3 pre-loaded cards with smooth animation
+        // Detect if we're on mobile (same breakpoint as Tailwind's 'sm')
+        function isMobile() {
+            return window.innerWidth < 640;
+        }
+        
+        // Update show more button text based on device
+        function updateShowMoreText() {
+            const showMoreText = document.getElementById('show-more-text');
+            if (showMoreText) {
+                const mobile = isMobile();
+                const nextCount = mobile ? '1' : '3';
+                const nextText = mobile ? 'result' : 'results';
+                showMoreText.textContent = \`👉 Would you like AVA to present the next \${nextCount} \${nextText}?\`;
+            }
+        }
+        
+        // Show the next batch of pre-loaded cards with smooth animation (responsive)
         async function showNextCards() {
             const resultsGrid = document.getElementById('results-grid');
             const showMoreContainer = document.getElementById('show-more-container');
             const hiddenCards = resultsGrid.querySelectorAll('.hidden-next-cards');
+            
+            // Determine how many cards to show based on device type
+            const cardsToShow = isMobile() ? 1 : 3;
             
             // Remove the "Show more" link immediately
             if (showMoreContainer) {
@@ -803,8 +824,8 @@ function generateSearchPageHTML(query, results, filename) {
                 }, 300);
             }
             
-            // Reveal the next 3 cards with staggered animation
-            for (let i = 0; i < hiddenCards.length && i < 3; i++) {
+            // Reveal the next batch of cards with staggered animation
+            for (let i = 0; i < hiddenCards.length && i < cardsToShow; i++) {
                 const card = hiddenCards[i];
                 
                 // Show the card
@@ -813,23 +834,67 @@ function generateSearchPageHTML(query, results, filename) {
                 card.classList.add('opacity-0', 'transform', 'translate-y-4', 'transition-all', 'duration-500', 'ease-out');
                 
                 // Animate in after a small delay
+                const delay = isMobile() ? 200 : 300; // Faster on mobile
                 setTimeout(() => {
                     card.classList.remove('opacity-0', 'translate-y-4');
-                }, 50 + (i * 300)); // Staggered delay
+                }, 50 + (i * delay)); // Staggered delay
             }
+            
+            // Check if there are still more cards to show and add another "Show more" link
+            setTimeout(() => {
+                const remainingCards = resultsGrid.querySelectorAll('.hidden-next-cards');
+                if (remainingCards.length > 0) {
+                    const newShowMoreContainer = document.createElement('div');
+                    newShowMoreContainer.id = 'show-more-container';
+                    newShowMoreContainer.className = 'col-span-full flex justify-center mt-6 mb-4';
+                    
+                    const mobile = isMobile();
+                    const nextCount = mobile ? '1' : '3';
+                    const nextText = mobile ? 'result' : 'results';
+                    
+                    newShowMoreContainer.innerHTML = \`
+                        <button id="show-more-link"
+                                class="text-blue-600 hover:text-blue-800 font-medium text-lg transition-colors duration-200 flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-blue-50"
+                                onclick="showNextCards()">
+                            <span>👉 Would you like AVA to present the next \${nextCount} \${nextText}?</span>
+                        </button>
+                    \`;
+                    
+                    resultsGrid.appendChild(newShowMoreContainer);
+                }
+            }, cardsToShow * (isMobile() ? 200 : 300) + 100);
         }
         
-        // Auto-reveal first 3 cards on page load
+        // Auto-reveal initial cards on page load (responsive)
         document.addEventListener('DOMContentLoaded', function() {
             const initialCards = document.querySelectorAll('[data-yacht-index]');
+            const mobile = isMobile();
+            const initialCardsToShow = mobile ? 1 : 3;
             
-            // Reveal first 3 cards with staggered animation
-            for (let i = 0; i < Math.min(3, initialCards.length); i++) {
+            // Update show more button text
+            updateShowMoreText();
+            
+            // Reveal initial cards with staggered animation
+            for (let i = 0; i < Math.min(initialCardsToShow, initialCards.length); i++) {
                 const card = initialCards[i];
                 if (card && !card.classList.contains('hidden-next-cards')) {
                     setTimeout(() => {
                         card.classList.remove('opacity-0', 'translate-y-4');
                     }, 100 + (i * 200)); // Staggered reveal
+                }
+            }
+            
+            // Show additional cards on desktop (cards 1 and 2, since card 0 is already shown)
+            if (!mobile && initialCards.length > 1) {
+                for (let i = 1; i < Math.min(3, initialCards.length); i++) {
+                    const card = initialCards[i];
+                    if (card && card.classList.contains('hidden-next-cards')) {
+                        card.style.display = 'block';
+                        card.classList.remove('hidden-next-cards');
+                        setTimeout(() => {
+                            card.classList.remove('opacity-0', 'translate-y-4');
+                        }, 100 + (i * 200));
+                    }
                 }
             }
             
@@ -841,6 +906,9 @@ function generateSearchPageHTML(query, results, filename) {
                 }, 50);
             }
         });
+        
+        // Update text on window resize
+        window.addEventListener('resize', updateShowMoreText);
     </script>
 
 </body>

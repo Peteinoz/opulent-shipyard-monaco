@@ -440,9 +440,10 @@ class OpulentShipyardApp {
     }
 
     /**
-     * Start the staggered reveal sequence with 3+3 pagination
+     * Start the staggered reveal sequence with responsive pagination
+     * Desktop: 3+3 pagination, Mobile: 1+1+1 pagination (like ChatGPT Overviews)
      * This creates the "thoughtful" reveal effect where AVA appears first,
-     * then the first 3 yacht cards appear, with the next 3 pre-loaded for instant display
+     * then cards appear based on screen size
      */
     async startStaggeredReveal() {
         const REVEAL_DELAY = 700; // Adjustable timing for reveals
@@ -450,9 +451,13 @@ class OpulentShipyardApp {
         const summaryContent = document.getElementById('summary-content');
         const resultsGrid = document.getElementById('results-grid');
         
-        // Initialize progress tracking (only for first 3 cards + summary)
-        const initialCards = Math.min(3, this.searchData?.yachts?.length || 0);
-        const totalSteps = 1 + initialCards; // 1 for summary + first 3 cards
+        // Detect if we're on mobile (same breakpoint as Tailwind's 'sm')
+        const isMobile = window.innerWidth < 640;
+        const cardsPerPage = isMobile ? 1 : 3;
+        
+        // Initialize progress tracking (only for first batch of cards + summary)
+        const initialCards = Math.min(cardsPerPage, this.searchData?.yachts?.length || 0);
+        const totalSteps = 1 + initialCards; // 1 for summary + first batch of cards
         let currentStep = 0;
         
         try {
@@ -472,20 +477,23 @@ class OpulentShipyardApp {
             // Wait before revealing results (the "thoughtful pause")
             await this.delay(REVEAL_DELAY);
             
-            // Step 2: Reveal only the first 3 yacht cards
+            // Step 2: Reveal yacht cards based on screen size (responsive pagination)
             if (this.searchData?.yachts && resultsGrid) {
-                // Create all yacht cards but only reveal the first 3
+                // Create all yacht cards but only reveal the first batch
                 for (let i = 0; i < this.searchData.yachts.length; i++) {
                     const yacht = this.searchData.yachts[i];
                     const yachtCard = this.createYachtCard(yacht, i);
                     
-                    if (i < 3) {
-                        // First 3 cards: add to grid and reveal with animation
+                    if (i < cardsPerPage) {
+                        // First batch of cards: add to grid and reveal with animation
                         yachtCard.classList.add('staggered-reveal-item');
                         resultsGrid.appendChild(yachtCard);
                         
                         // Reveal with animation
-                        await this.revealElementWithAnimation(yachtCard, `Revealing yacht ${i + 1} of ${Math.min(3, this.searchData.yachts.length)}...`);
+                        const cardText = isMobile ?
+                            `Revealing yacht ${i + 1} of ${Math.min(cardsPerPage, this.searchData.yachts.length)}...` :
+                            `Revealing yacht ${i + 1} of ${Math.min(cardsPerPage, this.searchData.yachts.length)}...`;
+                        await this.revealElementWithAnimation(yachtCard, cardText);
                         
                         // Update progress
                         currentStep++;
@@ -493,20 +501,20 @@ class OpulentShipyardApp {
                         this.updateProgressBar(progressPercent);
                         
                         // Wait before next reveal (the staggered effect)
-                        if (i < Math.min(2, this.searchData.yachts.length - 1)) {
+                        if (i < Math.min(cardsPerPage - 1, this.searchData.yachts.length - 1)) {
                             await this.delay(REVEAL_DELAY);
                         }
                     } else {
-                        // Next 3 cards: pre-load but keep hidden for instant display later
+                        // Remaining cards: pre-load but keep hidden for instant display later
                         yachtCard.classList.add('hidden-next-cards');
                         yachtCard.style.display = 'none';
                         resultsGrid.appendChild(yachtCard);
                     }
                 }
                 
-                // Add "Show next 3" link if there are more than 3 results
-                if (this.searchData.yachts.length > 3) {
-                    this.addShowMoreLink(resultsGrid);
+                // Add "Show next" link if there are more results than the first batch
+                if (this.searchData.yachts.length > cardsPerPage) {
+                    this.addShowMoreLink(resultsGrid, isMobile);
                 }
             }
             
@@ -577,9 +585,9 @@ class OpulentShipyardApp {
     }
 
     /**
-     * Add "Show next 3" link below the first 3 cards
+     * Add "Show next" link below the first batch of cards (responsive)
      */
-    addShowMoreLink(resultsGrid) {
+    addShowMoreLink(resultsGrid, isMobile = false) {
         const showMoreContainer = document.createElement('div');
         showMoreContainer.id = 'show-more-container';
         showMoreContainer.className = 'col-span-full flex justify-center mt-6 mb-4';
@@ -587,12 +595,16 @@ class OpulentShipyardApp {
         const showMoreLink = document.createElement('button');
         showMoreLink.id = 'show-more-link';
         showMoreLink.className = 'text-blue-600 hover:text-blue-800 font-medium text-lg transition-colors duration-200 flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-blue-50';
+        
+        // Responsive text based on device type
+        const nextCount = isMobile ? '1' : '3';
+        const nextText = isMobile ? 'result' : 'results';
         showMoreLink.innerHTML = `
-            <span>👉 Would you like AVA to present the next 3 results?</span>
+            <span>👉 Would you like AVA to present the next ${nextCount} ${nextText}?</span>
         `;
         
         showMoreLink.addEventListener('click', () => {
-            this.showNextCards();
+            this.showNextCards(isMobile);
         });
         
         showMoreContainer.appendChild(showMoreLink);
@@ -600,12 +612,15 @@ class OpulentShipyardApp {
     }
 
     /**
-     * Show the next 3 pre-loaded cards with smooth animation
+     * Show the next batch of pre-loaded cards with smooth animation (responsive)
      */
-    async showNextCards() {
+    async showNextCards(isMobile = false) {
         const resultsGrid = document.getElementById('results-grid');
         const showMoreContainer = document.getElementById('show-more-container');
         const hiddenCards = resultsGrid.querySelectorAll('.hidden-next-cards');
+        
+        // Determine how many cards to show based on device type
+        const cardsToShow = isMobile ? 1 : 3;
         
         // Remove the "Show more" link immediately
         if (showMoreContainer) {
@@ -616,8 +631,8 @@ class OpulentShipyardApp {
             }, 300);
         }
         
-        // Reveal the next 3 cards with staggered animation
-        for (let i = 0; i < hiddenCards.length && i < 3; i++) {
+        // Reveal the next batch of cards with staggered animation
+        for (let i = 0; i < hiddenCards.length && i < cardsToShow; i++) {
             const card = hiddenCards[i];
             
             // Show the card
@@ -628,10 +643,19 @@ class OpulentShipyardApp {
             // Animate in
             await this.revealElementWithAnimation(card);
             
-            // Small delay between cards for staggered effect
-            if (i < hiddenCards.length - 1 && i < 2) {
-                await this.delay(300);
+            // Small delay between cards for staggered effect (shorter on mobile)
+            if (i < hiddenCards.length - 1 && i < cardsToShow - 1) {
+                const delay = isMobile ? 200 : 300; // Faster on mobile for 1+1+1
+                await this.delay(delay);
             }
+        }
+        
+        // Check if there are still more cards to show and add another "Show more" link
+        const remainingCards = resultsGrid.querySelectorAll('.hidden-next-cards');
+        if (remainingCards.length > 0) {
+            // Re-detect mobile state in case of orientation change
+            const currentlyMobile = window.innerWidth < 640;
+            this.addShowMoreLink(resultsGrid, currentlyMobile);
         }
     }
 

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulletproof Search - Opulent Shipyard Monaco</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #F8F8F8;
+        }
+
+        .luxurious-search-bar {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(220, 220, 220, 0.5);
+        }
+
+        .luxurious-button {
+            background: linear-gradient(145deg, #e0e0e0, #ffffff);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05), -4px -4px 8px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+        }
+
+        .autocomplete-dropdown {
+            background: linear-gradient(145deg, #ffffff, #f8f8f8);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(220, 220, 220, 0.8);
+        }
+
+        .autocomplete-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.highlighted {
+            background-color: #f8f9fa;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center">
+    <main class="flex-grow flex items-center justify-center w-full">
+        <div class="flex flex-col items-center justify-center w-full max-w-3xl px-4">
+            <!-- Search Bar with bulletproof implementation -->
+            <div class="relative w-full mb-4">
+                <div class="flex w-full rounded-full overflow-hidden luxurious-search-bar">
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Ask any question in natural language to find amazing results."
+                        class="flex-grow p-4 text-lg bg-transparent border-none focus:outline-none placeholder-gray-500 rounded-l-full"
+                        autocomplete="off"
+                    >
+                    <button
+                        id="search-button"
+                        class="luxurious-button px-6 text-gray-800 font-semibold rounded-r-full hover:bg-gray-100 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                        Discover
+                    </button>
+                </div>
+                <!-- Autocomplete dropdown -->
+                <div id="autocomplete-dropdown" class="absolute top-full left-0 right-0 autocomplete-dropdown rounded-lg mt-2 z-50 hidden max-h-60 overflow-y-auto">
+                    <!-- Suggestions will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Status display -->
+            <div id="search-status" class="text-gray-600 mt-4 hidden">
+                <div class="flex items-center">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                    <span>Searching...</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // BULLETPROOF SEARCH IMPLEMENTATION
+        class BulletproofSearch {
+            constructor() {
+                // Global search state - SINGLE SOURCE OF TRUTH
+                this.searchInProgress = false;
+                
+                // DOM elements
+                this.searchInput = document.getElementById('search-input');
+                this.searchButton = document.getElementById('search-button');
+                this.dropdown = document.getElementById('autocomplete-dropdown');
+                this.searchStatus = document.getElementById('search-status');
+                
+                // Autocomplete data
+                this.suggestions = [
+                    "Best yacht in Monaco",
+                    "Superyacht charter Monaco",
+                    "Luxury yacht rental Monaco",
+                    "Monaco yacht show 2024",
+                    "Feadship superyacht",
+                    "Benetti yacht charter",
+                    "Lürssen superyacht",
+                    "Monaco Grand Prix yacht",
+                    "Superyacht for sale Monaco",
+                    "Yacht charter Mediterranean",
+                    "Monaco yacht club",
+                    "Private yacht charter",
+                    "Mega yacht Monaco",
+                    "Yacht broker Monaco",
+                    "Superyacht crew Monaco",
+                    "Monaco yacht berth",
+                    "Luxury motor yacht",
+                    "Sailing yacht Monaco",
+                    "Yacht management Monaco",
+                    "Monaco yacht services"
+                ];
+                
+                this.filteredSuggestions = [];
+                this.currentIndex = -1;
+                
+                this.init();
+            }
+            
+            init() {
+                // Button click handler - BULLETPROOF
+                this.searchButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.handleSearchTrigger('button-click');
+                });
+                
+                // Enter key handler - BULLETPROOF
+                this.searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (this.currentIndex >= 0 && this.isDropdownVisible()) {
+                            // Select highlighted suggestion
+                            this.selectSuggestion(this.filteredSuggestions[this.currentIndex]);
+                        } else {
+                            // Trigger search
+                            this.handleSearchTrigger('enter-key');
+                        }
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        this.navigateDropdown(1);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.navigateDropdown(-1);
+                    } else if (e.key === 'Escape') {
+                        this.hideDropdown();
+                    }
+                });
+                
+                // Input handler for autocomplete
+                this.searchInput.addEventListener('input', (e) => {
+                    this.handleInput(e.target.value);
+                });
+                
+                // Focus handler
+                this.searchInput.addEventListener('focus', () => {
+                    if (this.searchInput.value.trim()) {
+                        this.handleInput(this.searchInput.value);
+                    }
+                });
+                
+                // Click outside to hide dropdown
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.relative')) {
+                        this.hideDropdown();
+                    }
+                });
+            }
+            
+            // BULLETPROOF search trigger handler
+            handleSearchTrigger(source) {
+                console.log(`Search triggered from: ${source}`);
+                
+                // ATOMIC CHECK AND SET - prevents ALL race conditions
+                if (this.searchInProgress) {
+                    console.log(`Search blocked - already in progress (source: ${source})`);
+                    return;
+                }
+                
+                // IMMEDIATELY set flag and disable button
+                this.searchInProgress = true;
+                this.disableSearchButton();
+                this.hideDropdown();
+                
+                const query = this.searchInput.value.trim();
+                if (!query) {
+                    this.enableSearchButton();
+                    this.searchInProgress = false;
+                    return;
+                }
+                
+                console.log(`Starting search for: "${query}"`);
+                this.performSearch(query);
+            }
+            
+            // Disable button immediately and show searching state
+            disableSearchButton() {
+                this.searchButton.disabled = true;
+                this.searchButton.textContent = 'Searching…';
+                this.searchButton.classList.add('opacity-50', 'cursor-not-allowed');
+                this.searchButton.classList.remove('hover:bg-gray-100');
+                this.searchStatus.classList.remove('hidden');
+                console.log('Button disabled - Searching state active');
+            }
+            
+            // Re-enable button and restore normal state
+            enableSearchButton() {
+                this.searchButton.disabled = false;
+                this.searchButton.textContent = 'Discover';
+                this.searchButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                this.searchButton.classList.add('hover:bg-gray-100');
+                this.searchStatus.classList.add('hidden');
+                console.log('Button enabled - Ready for new search');
+            }
+            
+            // Simulate search operation
+            async performSearch(query) {
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Simulate results
+                    console.log(`Search completed for: "${query}"`);
+                    alert(`Search results for: "${query}"\n\nThis is a demo - in real implementation, results would be displayed here.`);
+                    
+                } catch (error) {
+                    console.error('Search failed:', error);
+                    alert('Search failed. Please try again.');
+                } finally {
+                    // ALWAYS re-enable button
+                    this.searchInProgress = false;
+                    this.enableSearchButton();
+                }
+            }
+            
+            // Handle autocomplete input
+            handleInput(value) {
+                const query = value.trim().toLowerCase();
+                
+                if (query.length === 0) {
+                    this.hideDropdown();
+                    return;
+                }
+                
+                // Filter suggestions
+                this.filteredSuggestions = this.suggestions.filter(suggestion =>
+                    suggestion.toLowerCase().includes(query)
+                ).slice(0, 8); // Limit to 8 suggestions
+                
+                if (this.filteredSuggestions.length > 0) {
+                    this.showDropdown();
+                } else {
+                    this.hideDropdown();
+                }
+            }
+            
+            // Show autocomplete dropdown
+            showDropdown() {
+                this.dropdown.innerHTML = '';
+                this.currentIndex = -1;
+                
+                this.filteredSuggestions.forEach((suggestion, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item text-gray-700';
+                    item.textContent = suggestion;
+                    item.addEventListener('click', () => this.selectSuggestion(suggestion));
+                    this.dropdown.appendChild(item);
+                });
+                
+                this.dropdown.classList.remove('hidden');
+            }
+            
+            // Hide autocomplete dropdown
+            hideDropdown() {
+                this.dropdown.classList.add('hidden');
+                this.currentIndex = -1;
+            }
+            
+            // Check if dropdown is visible
+            isDropdownVisible() {
+                return !this.dropdown.classList.contains('hidden');
+            }
+            
+            // Navigate dropdown with arrow keys
+            navigateDropdown(direction) {
+                if (!this.isDropdownVisible()) return;
+                
+                const maxIndex = this.filteredSuggestions.length - 1;
+                
+                if (direction > 0) {
+                    this.currentIndex = Math.min(this.currentIndex + 1, maxIndex);
+                } else {
+                    this.currentIndex = Math.max(this.currentIndex - 1, -1);
+                }
+                
+                this.updateHighlight();
+            }
+            
+            // Update visual highlight in dropdown
+            updateHighlight() {
+                const items = this.dropdown.querySelectorAll('.autocomplete-item');
+                items.forEach((item, index) => {
+                    if (index === this.currentIndex) {
+                        item.classList.add('highlighted');
+                    } else {
+                        item.classList.remove('highlighted');
+                    }
+                });
+            }
+            
+            // Select a suggestion
+            selectSuggestion(suggestion) {
+                this.searchInput.value = suggestion;
+                this.hideDropdown();
+                // Automatically trigger search when suggestion is selected
+                this.handleSearchTrigger('autocomplete-selection');
+            }
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new BulletproofSearch();
+            console.log('Bulletproof search initialized');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect - Opulent Shipyard Monaco</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            text-align: center;
+            background: #f8f8f8;
+        }
+        .redirect-box {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .redirect-link {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            font-weight: bold;
+        }
+        .redirect-link:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-box">
+        <h1>🚢 Opulent Shipyard Monaco</h1>
+        <p>The main website has been moved to the htdocs directory for proper web server structure.</p>
+        
+        <h2>Access the Main Site:</h2>
+        <a href="htdocs/index.html" class="redirect-link">🏠 Go to Main Site</a>
+        
+        <h2>Other Pages:</h2>
+        <a href="test.html" class="redirect-link">🧪 Test Page</a>
+        <a href="status-check.html" class="redirect-link">📊 Status Check</a>
+        <a href="htdocs/verification.html" class="redirect-link">✅ Verification</a>
+        
+        <h2>Direct Server Access:</h2>
+        <p>For the best experience, access the site directly at:</p>
+        <p><strong>http://127.0.0.1:3000/</strong> (htdocs as root)</p>
+    </div>
+    
+    <script>
+        console.log('Redirect page loaded');
+        console.log('Main site location: htdocs/index.html');
+        
+        // Auto-redirect after 5 seconds
+        setTimeout(() => {
+            console.log('Auto-redirecting to main site...');
+            window.location.href = 'htdocs/index.html';
+        }, 5000);
+    </script>
+</body>
+</html>

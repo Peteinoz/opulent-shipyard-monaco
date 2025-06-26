@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "*.js",
+    "*.json",
+    ".env.local"
+  ],
+  "ext": "js,json,env",
+  "ignore": [
+    "node_modules/",
+    "htdocs/",
+    "rsscontent/",
+    "searches/"
+  ],
+  "events": {
+    "restart": "echo '✅ Server restarted due to .env.local change — new env variables applied.'"
+  }
+}

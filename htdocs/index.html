@@ -223,6 +223,8 @@
         <div class="flex space-x-6">
             <a href="mailto:tech@opulentshipyardmonaco.com?subject=Opulent Shipyard Inquiry." class="text-gray-500 hover:text-gray-700 text-sm font-light">Contact</a>
             <a href="/searches/" class="text-gray-500 hover:text-gray-700 text-sm font-light">Previous Searches</a>
+            <a href="/rsscontent/" class="text-gray-500 hover:text-gray-700 text-sm font-light">RSS Content</a>
+            <button id="run-rss-build" class="text-blue-600 hover:text-blue-800 text-sm font-light cursor-pointer border-none bg-transparent">Run RSS Build</button>
             <a href="/settings.html" class="text-gray-500 hover:text-gray-700 text-sm font-light">Settings</a>
         </div>
     </footer>
@@ -231,6 +233,65 @@
 
     <!-- Load main application JavaScript -->
     <script src="app.js"></script>
+    
+    <!-- RSS Build functionality -->
+    <script>
+        document.getElementById('run-rss-build').addEventListener('click', async function() {
+            const button = this;
+            const originalText = button.textContent;
+            
+            // Show loading state
+            button.textContent = 'Building RSS...';
+            button.disabled = true;
+            button.style.opacity = '0.6';
+            
+            try {
+                const response = await fetch('/api/build-rss', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    button.textContent = 'RSS Built!';
+                    button.style.color = '#10b981'; // Green color
+                    
+                    // Show success message with links
+                    setTimeout(() => {
+                        alert(`RSS content generated successfully!\n\nView at:\n• ${result.staticPageUrl}\n• ${result.indexUrl}`);
+                    }, 500);
+                    
+                    // Reset button after 3 seconds
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.color = '';
+                        button.disabled = false;
+                        button.style.opacity = '1';
+                    }, 3000);
+                } else {
+                    throw new Error(result.error || 'RSS build failed');
+                }
+                
+            } catch (error) {
+                console.error('RSS build error:', error);
+                button.textContent = 'Build Failed';
+                button.style.color = '#ef4444'; // Red color
+                
+                alert('RSS build failed: ' + error.message);
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.color = '';
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                }, 3000);
+            }
+        });
+    </script>
     
     <!-- Debug script for browser action troubleshooting -->
 

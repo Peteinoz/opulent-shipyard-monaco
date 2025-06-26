@@ -285,6 +285,12 @@ class OpulentShipyardApp {
         // Modify the main element layout for search results
         const mainElement = document.querySelector('main');
         
+        // Clear any existing results container to prevent stacking
+        const existingResultsContainer = mainElement.querySelector('.progressive-search-container');
+        if (existingResultsContainer) {
+            existingResultsContainer.remove();
+        }
+        
         // Change from centered layout to top-aligned layout
         mainElement.className = 'flex-grow w-full search-container pt-8';
         
@@ -389,6 +395,10 @@ class OpulentShipyardApp {
             case 'complete':
                 // Close EventSource connection immediately when search completes
                 this.closeEventSource();
+                // Clear the search input box
+                if (this.searchInput) {
+                    this.searchInput.value = '';
+                }
                 // Start the staggered reveal sequence
                 this.startStaggeredReveal();
                 break;

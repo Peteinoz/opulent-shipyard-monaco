@@ -1,0 +1,9 @@
+Deploy updated api/opensearch.js to Vercel.
+
+Ensure vercel.json routes API requests using:
+{
+  "src": "/api/(.*)",
+  "dest": "api/$1.js"
+}
+
+Trigger full deployment with API routes enabled.

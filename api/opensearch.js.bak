@@ -1,17 +1,11 @@
 export default async function handler(req, res) {
-    const method = req.method;
-    let query = '';
-
-    if (method === 'GET') {
-        query = req.query.query;
-    } else if (method === 'POST') {
-        query = req.body.query;
-    }
+    const { query } = req.body;
 
     if (!query || typeof query !== 'string') {
         return res.status(400).json({ error: 'Missing or invalid query parameter' });
     }
 
+    // Simple mock response — update this with real logic later
     const sampleResults = [
         {
             title: `Best Yachts Matching "${query}"`,

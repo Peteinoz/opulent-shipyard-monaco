@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "// Updated for opensearch API deployment": "2025-06-27",
   "builds": [
     {
       "src": "api/*.js",

@@ -1,0 +1,29 @@
+{
+  "name": "opulent-shipyard-monaco",
+  "version": "1.0.0",
+  "description": "Self-growing natural language yacht search website",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "yacht",
+    "search",
+    "luxury",
+    "monaco",
+    "superyacht",
+    "natural-language"
+  ],
+  "author": "Opulent Shipyard Monaco",
+  "license": "MIT"
+}

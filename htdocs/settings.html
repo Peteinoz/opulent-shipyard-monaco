@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Opulent Shipyard Monaco</title>
+    <meta name="description" content="Configure your yacht search preferences and RSS feed sources.">
+    
+    <!-- Preconnect to Google Fonts for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #F8F8F8;
+        }
+        .luxurious-card {
+            background: linear-gradient(145deg, #ffffff, #f8f8f8);
+            box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.1), -6px -6px 12px rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(220, 220, 220, 0.3);
+        }
+        .luxurious-button {
+            background: linear-gradient(145deg, #e0e0e0, #ffffff);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05), -4px -4px 8px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+        }
+        .luxurious-input {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.05), inset -4px -4px 8px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(220, 220, 220, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <!-- Header -->
+    <header class="w-full py-4 px-6 flex justify-between items-center bg-white shadow-sm">
+        <div class="flex items-center">
+            <img src="/images/icon.png" alt="Opulent Shipyard Monaco Logo" class="h-10 w-10 mr-2 rounded-full object-cover">
+            <a href="/" class="text-xl font-bold text-gray-800">Opulent Shipyard Monaco</a>
+        </div>
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="/" class="text-gray-600 hover:text-gray-900 font-medium">Home</a></li>
+                <li><a href="/about" class="text-gray-600 hover:text-gray-900 font-medium">About</a></li>
+                <li><a href="/searches/" class="text-gray-600 hover:text-gray-900 font-medium">Previous Searches</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Search Settings</h1>
+        
+        <!-- Results Count Setting -->
+        <div class="luxurious-card rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Search Results</h2>
+            <div class="flex items-center space-x-4">
+                <label for="results-count" class="text-gray-700 font-medium">Number of results per search:</label>
+                <select id="results-count" class="luxurious-input rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="3">3 results</option>
+                    <option value="4">4 results</option>
+                    <option value="5">5 results</option>
+                    <option value="6">6 results</option>
+                    <option value="7">7 results</option>
+                    <option value="8">8 results</option>
+                    <option value="9">9 results</option>
+                </select>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">Choose how many yacht results to display for each search (3-9).</p>
+        </div>
+
+        <!-- RSS Feeds Setting -->
+        <div class="luxurious-card rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">RSS Feed Sources</h2>
+            <p class="text-gray-600 mb-4">Manage RSS feed URLs for additional yacht content sources. Currently configured: <span id="rss-count" class="font-semibold">0</span></p>
+            
+            <!-- RSS Feed List -->
+            <div id="rss-feeds-list" class="space-y-3 mb-4">
+                <!-- RSS feeds will be populated here -->
+            </div>
+            
+            <!-- Add New RSS Feed -->
+            <div class="flex space-x-3">
+                <input 
+                    type="url" 
+                    id="new-rss-url" 
+                    placeholder="Enter RSS feed URL..." 
+                    class="flex-grow luxurious-input rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                <button 
+                    id="add-rss-button" 
+                    class="luxurious-button px-4 py-2 rounded text-gray-800 font-medium hover:bg-gray-100 transition duration-200"
+                >
+                    Add Feed
+                </button>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">Note: RSS feed processing is not yet implemented. This interface allows you to manage feed URLs for future use.</p>
+        </div>
+
+        <!-- Save Settings -->
+        <div class="flex justify-end space-x-4">
+            <button 
+                id="reset-button" 
+                class="px-6 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition duration-200"
+            >
+                Reset to Defaults
+            </button>
+            <button 
+                id="save-button" 
+                class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
+            >
+                Save Settings
+            </button>
+        </div>
+
+        <!-- Status Message -->
+        <div id="status-message" class="mt-4 p-3 rounded hidden"></div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-8 px-6 bg-white border-t mt-12">
+        <div class="max-w-4xl mx-auto text-center">
+            <a href="mailto:tech@opulentshipyardmonaco.com?subject=Settings Inquiry" class="text-gray-500 hover:text-gray-700 text-sm font-light">Contact</a>
+        </div>
+    </footer>
+
+    <script>
+        class SettingsManager {
+            constructor() {
+                this.settings = {
+                    resultsCount: 6,
+                    rssFeeds: []
+                };
+                this.init();
+            }
+
+            async init() {
+                await this.loadSettings();
+                this.bindEvents();
+                this.updateUI();
+            }
+
+            async loadSettings() {
+                try {
+                    const response = await fetch('/api/settings');
+                    if (response.ok) {
+                        this.settings = await response.json();
+                    }
+                } catch (error) {
+                    console.error('Failed to load settings:', error);
+                }
+            }
+
+            async saveSettings() {
+                try {
+                    const response = await fetch('/api/settings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(this.settings)
+                    });
+
+                    if (response.ok) {
+                        this.settings = await response.json();
+                        this.showStatus('Settings saved successfully!', 'success');
+                        this.updateUI();
+                    } else {
+                        throw new Error('Failed to save settings');
+                    }
+                } catch (error) {
+                    console.error('Failed to save settings:', error);
+                    this.showStatus('Failed to save settings. Please try again.', 'error');
+                }
+            }
+
+            bindEvents() {
+                // Save button
+                document.getElementById('save-button').addEventListener('click', () => {
+                    this.collectSettings();
+                    this.saveSettings();
+                });
+
+                // Reset button
+                document.getElementById('reset-button').addEventListener('click', () => {
+                    this.resetToDefaults();
+                });
+
+                // Add RSS feed
+                document.getElementById('add-rss-button').addEventListener('click', () => {
+                    this.addRSSFeed();
+                });
+
+                // Enter key for RSS input
+                document.getElementById('new-rss-url').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.addRSSFeed();
+                    }
+                });
+            }
+
+            collectSettings() {
+                // Get results count
+                this.settings.resultsCount = parseInt(document.getElementById('results-count').value);
+            }
+
+            updateUI() {
+                // Update results count
+                document.getElementById('results-count').value = this.settings.resultsCount;
+
+                // Update RSS feeds
+                this.updateRSSFeedsList();
+                this.updateRSSCount();
+            }
+
+            updateRSSFeedsList() {
+                const container = document.getElementById('rss-feeds-list');
+                container.innerHTML = '';
+
+                this.settings.rssFeeds.forEach((feed, index) => {
+                    const feedElement = document.createElement('div');
+                    feedElement.className = 'flex items-center justify-between bg-gray-50 p-3 rounded';
+                    feedElement.innerHTML = `
+                        <span class="text-gray-700 truncate flex-grow mr-3">${feed}</span>
+                        <button 
+                            class="text-red-600 hover:text-red-800 text-sm font-medium"
+                            onclick="settingsManager.removeRSSFeed(${index})"
+                        >
+                            Remove
+                        </button>
+                    `;
+                    container.appendChild(feedElement);
+                });
+            }
+
+            updateRSSCount() {
+                document.getElementById('rss-count').textContent = this.settings.rssFeeds.length;
+            }
+
+            addRSSFeed() {
+                const input = document.getElementById('new-rss-url');
+                const url = input.value.trim();
+
+                if (!url) {
+                    this.showStatus('Please enter a valid RSS feed URL.', 'error');
+                    return;
+                }
+
+                if (this.settings.rssFeeds.includes(url)) {
+                    this.showStatus('This RSS feed is already added.', 'error');
+                    return;
+                }
+
+                this.settings.rssFeeds.push(url);
+                input.value = '';
+                this.updateRSSFeedsList();
+                this.updateRSSCount();
+                this.showStatus('RSS feed added. Remember to save your settings.', 'info');
+            }
+
+            removeRSSFeed(index) {
+                this.settings.rssFeeds.splice(index, 1);
+                this.updateRSSFeedsList();
+                this.updateRSSCount();
+                this.showStatus('RSS feed removed. Remember to save your settings.', 'info');
+            }
+
+            resetToDefaults() {
+                this.settings = {
+                    resultsCount: 6,
+                    rssFeeds: []
+                };
+                this.updateUI();
+                this.showStatus('Settings reset to defaults. Click Save to apply.', 'info');
+            }
+
+            showStatus(message, type) {
+                const statusElement = document.getElementById('status-message');
+                statusElement.textContent = message;
+                statusElement.className = `mt-4 p-3 rounded ${this.getStatusClasses(type)}`;
+                statusElement.classList.remove('hidden');
+
+                setTimeout(() => {
+                    statusElement.classList.add('hidden');
+                }, 5000);
+            }
+
+            getStatusClasses(type) {
+                switch (type) {
+                    case 'success':
+                        return 'bg-green-100 text-green-800 border border-green-200';
+                    case 'error':
+                        return 'bg-red-100 text-red-800 border border-red-200';
+                    case 'info':
+                        return 'bg-blue-100 text-blue-800 border border-blue-200';
+                    default:
+                        return 'bg-gray-100 text-gray-800 border border-gray-200';
+                }
+            }
+        }
+
+        // Initialize settings manager
+        const settingsManager = new SettingsManager();
+    </script>
+
+</body>
+</html>

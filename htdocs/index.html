@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opulent Shipyard Monaco - Bespoke Superyacht Crafting & Natural Language Search</title>
+
+    <!-- Preconnect to Google Fonts for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Load Montserrat font (Light 300 and Regular 400 for sophistication) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+    <!-- Load Tailwind CSS for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom CSS for specific luxurious elements not covered by Tailwind or for overrides -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif; /* Apply Montserrat as the primary font */
+            background-color: #F8F8F8; /* A very light, subtle off-white background for luxury */
+        }
+
+        /* Custom styles for the luxurious search bar gradient and shadow */
+        .luxurious-search-bar {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0); /* Soft gradient from top-left to bottom-right */
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5); /* Subtle shadow for depth */
+            border: 1px solid rgba(220, 220, 220, 0.5); /* Very light border */
+        }
+
+        /* Ensure the button matches the search bar's luxurious style */
+        .luxurious-button {
+            background: linear-gradient(145deg, #e0e0e0, #ffffff); /* Inverted soft gradient for the button */
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05), -4px -4px 8px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+        }
+
+        /* Responsive adjustments for the search bar on smaller screens */
+        @media (max-width: 640px) {
+            .search-container {
+                padding: 0 1rem; /* Add some padding to prevent the search bar from touching screen edges */
+            }
+            .luxurious-search-bar {
+                height: 3.5rem; /* Slightly smaller height on mobile */
+            }
+            .luxurious-button {
+                height: 3.5rem; /* Match button height on mobile */
+                padding-left: 1rem; /* Adjust padding for mobile button */
+                padding-right: 1rem;
+            }
+        }
+
+        /* Autocomplete dropdown styles */
+        .autocomplete-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.highlighted {
+            background-color: #f8f9fa;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-dropdown {
+            background: linear-gradient(145deg, #ffffff, #f8f8f8);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(220, 220, 220, 0.8);
+        }
+
+        /* Staggered Reveal Animation Styles */
+        .staggered-reveal-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .staggered-reveal-item.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Progress bar smooth transitions */
+        #search-progress-bar {
+            transition: width 0.5s ease-out;
+        }
+
+        /* Enhanced yacht card hover effects for revealed items */
+        .yacht-card.revealed {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Subtle pulse effect for AVA summary when revealed */
+        #ava-summary.revealed {
+            animation: fadeInScale 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Progress text smooth transitions */
+        #progress-text {
+            transition: all 0.3s ease-out;
+        }
+
+        /* Mobile optimizations for staggered reveal */
+        @media (max-width: 768px) {
+            .staggered-reveal-item {
+                transform: translateY(15px);
+            }
+            
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+    </style>
+
+    <!-- Placeholder for Schema.org Structured Data (JSON-LD) - will be populated later -->
+    <script type="application/ld+json" id="structured-data-json">
+        {}
+    </script>
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Opulent Shipyard Monaco - Bespoke Superyacht Crafting & Natural Language Search">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/images/banner.png">
+    <meta property="og:url" content="https://opulentshipyardmonaco.com">
+    <meta property="og:description" content="Discover the world's most luxurious superyachts and experience a new era of bespoke craftsmanship through Opulent Shipyard Monaco's innovative natural language search.">
+    <meta property="og:site_name" content="Opulent Shipyard Monaco">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Meta Tags (Recommended for X/Twitter sharing) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Opulent Shipyard Monaco - Bespoke Superyacht Crafting & Natural Language Search">
+    <meta name="twitter:description" content="Discover the world's most luxurious superyachts and experience a new era of bespoke craftsmanship through Opulent Shipyard Monaco's innovative natural language search.">
+    <meta name="twitter:image" content="/images/banner.png">
+
+    <!-- Structured data will be populated by app.js -->
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between">
+
+    <!-- Header Section: Top Navigation Bar -->
+    <header class="w-full py-4 px-6 flex justify-between items-center relative z-10">
+        <!-- Opulent Shipyard Monaco Logo -->
+        <a href="/" class="flex items-center hover:opacity-80 transition duration-200">
+            <img src="/images/icon.png" alt="Opulent Shipyard Monaco Logo" class="h-10 w-10 mr-2 rounded-full object-cover">
+            <span class="text-xl font-bold text-gray-800">Opulent Shipyard Monaco</span>
+        </a>
+
+        <!-- Navigation Links -->
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="/about" class="text-gray-600 hover:text-gray-900 font-medium">About</a></li>
+                <li><a href="/about-tech" class="text-gray-600 hover:text-gray-900 font-medium">About the Tech</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Section: Central Search Interface -->
+    <main class="flex-grow flex items-center justify-center w-full search-container">
+        <div class="flex flex-col items-center justify-center w-full max-w-3xl px-4 sm:px-0">
+            <!-- Search Bar with luxurious styling and autocomplete -->
+            <div class="relative w-full mb-4">
+                <div class="flex w-full rounded-full overflow-hidden luxurious-search-bar">
+                    <input
+                        type="text"
+                        id="natural-language-search"
+                        placeholder="Ask any question in natural language to find amazing results."
+                        class="flex-grow p-4 text-lg bg-transparent border-none focus:outline-none placeholder-gray-500 rounded-l-full"
+                        aria-label="Natural language search input"
+                        autocomplete="off"
+                    >
+                    <button
+                        id="discover-button"
+                        class="luxurious-button px-6 text-gray-800 font-semibold rounded-r-full hover:bg-gray-100 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        aria-label="Discover button"
+                    >
+                        Discover
+                    </button>
+                </div>
+                <!-- Autocomplete dropdown -->
+                <div id="autocomplete-dropdown" class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 hidden max-h-60 overflow-y-auto">
+                    <!-- Suggestions will be populated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section: Minimalist Contact -->
+    <footer class="w-full py-4 px-6 flex justify-center items-center relative z-10">
+        <div class="flex space-x-6">
+            <a href="mailto:tech@opulentshipyardmonaco.com?subject=Opulent Shipyard Inquiry." class="text-gray-500 hover:text-gray-700 text-sm font-light">Contact</a>
+            <a href="/searches/" class="text-gray-500 hover:text-gray-700 text-sm font-light">Previous Searches</a>
+            <a href="/rsscontent/" class="text-gray-500 hover:text-gray-700 text-sm font-light">RSS Content</a>
+            <button id="run-rss-build" class="text-blue-600 hover:text-blue-800 text-sm font-light cursor-pointer border-none bg-transparent">Run RSS Build</button>
+            <a href="/settings.html" class="text-gray-500 hover:text-gray-700 text-sm font-light">Settings</a>
+        </div>
+    </footer>
+
+    <!-- Search functionality is handled by app.js -->
+
+    <!-- Load main application JavaScript -->
+    <script src="/app.js"></script>
+    
+    <!-- RSS Build functionality -->
+    <script>
+        document.getElementById('run-rss-build').addEventListener('click', async function() {
+            const button = this;
+            const originalText = button.textContent;
+            
+            // Show loading state
+            button.textContent = 'Building RSS...';
+            button.disabled = true;
+            button.style.opacity = '0.6';
+            
+            try {
+                const response = await fetch('/api/build-rss', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    button.textContent = 'RSS Built!';
+                    button.style.color = '#10b981'; // Green color
+                    
+                    // Show success message with links
+                    setTimeout(() => {
+                        alert(`RSS content generated successfully!\n\nView at:\n• ${result.staticPageUrl}\n• ${result.indexUrl}`);
+                    }, 500);
+                    
+                    // Reset button after 3 seconds
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.color = '';
+                        button.disabled = false;
+                        button.style.opacity = '1';
+                    }, 3000);
+                } else {
+                    throw new Error(result.error || 'RSS build failed');
+                }
+                
+            } catch (error) {
+                console.error('RSS build error:', error);
+                button.textContent = 'Build Failed';
+                button.style.color = '#ef4444'; // Red color
+                
+                alert('RSS build failed: ' + error.message);
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.color = '';
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                }, 3000);
+            }
+        });
+    </script>
+    
+    <!-- Debug script for browser action troubleshooting -->
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+{
+  "feeds": [
+    {
+      "name": "Superyachts Follow",
+      "url": "https://follow.it/superyachts/rss",
+      "description": "Superyacht news and updates"
+    },
+    {
+      "name": "Yachting World",
+      "url": "https://www.yachtingworld.com/feed",
+      "description": "Yachting World news and articles"
+    },
+    {
+      "name": "Robb Report",
+      "url": "https://robbreport.com/feed/",
+      "description": "Luxury lifestyle and yacht news"
+    },
+    {
+      "name": "Marine Log",
+      "url": "https://www.marinelog.com/feed/",
+      "description": "Marine industry news and updates"
+    },
+    {
+      "name": "Marine Link",
+      "url": "https://www.marinelink.com/news/rss",
+      "description": "Maritime news and information"
+    },
+    {
+      "name": "Yachting World Extended",
+      "url": "https://www.yachtingworld.com/feed?x=1",
+      "description": "Extended Yachting World feed"
+    },
+    {
+      "name": "Yacht RSS Feeds",
+      "url": "https://rss.feedspot.com/yacht_rss_feeds/",
+      "description": "Curated yacht RSS feeds"
+    },
+    {
+      "name": "Yachting World Archive",
+      "url": "https://www.yachtingworld.com/archive/rss-feeds-information-10233",
+      "description": "Yachting World RSS archive"
+    },
+    {
+      "name": "Interesting Sailboats",
+      "url": "https://interestingsailboats.blogspot.com/feeds/posts/default",
+      "description": "Sailboat news and reviews"
+    },
+    {
+      "name": "Charter World",
+      "url": "https://www.charterworld.com/news/feed",
+      "description": "Yacht charter news and updates"
+    },
+    {
+      "name": "Your Boat Holiday",
+      "url": "https://www.yourboatholiday.com/news-trends-2/feed/",
+      "description": "Boat holiday news and trends"
+    },
+    {
+      "name": "Luxuo Yachting",
+      "url": "https://www.luxuo.com/yachting/feed",
+      "description": "Luxury yachting news"
+    },
+    {
+      "name": "Megayacht News",
+      "url": "https://megayachtnews.com/feed/",
+      "description": "Megayacht industry news"
+    },
+    {
+      "name": "FYI Yachts",
+      "url": "https://fyiyachts.com/feed/",
+      "description": "Yacht news and updates from FYI Yachts"
+    },
+    {
+      "name": "Luxury Yacht Charters",
+      "url": "https://luxuryyachtcharters.com/feed/",
+      "description": "Luxury yacht charter news"
+    },
+    {
+      "name": "Yacht Charters Now",
+      "url": "https://yachtchartersnow.com/feed/",
+      "description": "Current yacht charter information"
+    },
+    {
+      "name": "Epic Yacht Charters",
+      "url": "https://www.epicyachtcharters.com/feed/",
+      "description": "Epic yacht charter experiences"
+    },
+    {
+      "name": "212 Yachts",
+      "url": "https://www.212-yachts.com/blog/feed/",
+      "description": "212 Yachts blog and news"
+    },
+    {
+      "name": "Columbus Yachts",
+      "url": "https://www.columbusyachts.it/feed/",
+      "description": "Columbus Yachts news and updates"
+    },
+    {
+      "name": "Silverstar Yachting",
+      "url": "https://www.silverstaryachting.com/en/blog/feed/",
+      "description": "Silverstar Yachting blog"
+    },
+    {
+      "name": "Yacht Vacations",
+      "url": "https://www.yachtvacations.com/feed/",
+      "description": "Yacht vacation news and tips"
+    },
+    {
+      "name": "MacGregor Yachts",
+      "url": "https://macgregoryachts.com/feed/",
+      "description": "MacGregor Yachts news"
+    },
+    {
+      "name": "World Yacht Group",
+      "url": "https://worldyachtgroup.com/feed/",
+      "description": "World Yacht Group updates"
+    }
+  ]
+}

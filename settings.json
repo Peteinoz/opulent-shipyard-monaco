@@ -1,0 +1,8 @@
+{
+  "resultsCount": 12,
+  "minResultsThreshold": 5,
+  "rssFeeds": [
+    "https://www.superyachtnews.com/rss",
+    "https://www.yachtworld.com/rss"
+  ]
+}
